@@ -84,6 +84,26 @@ public:
         return out;
     }
 
+    /**
+     * Stores the x, y and z coordinates of the point
+     * in the "out" array at indices 0-2, respectively.
+     */
+    void xyz(float *out) const noexcept
+    {
+        float tmp[4];
+        _mm_store_ps(tmp, p3_);
+        out[0] = tmp[1]; out[1] = tmp[2]; out[2] = tmp[3];
+    }
+
+    /**
+     * Stores the w, x, y and z coordinates of the point
+     * in the "out" array at indices 0-3, respectively.
+     */
+    void wxyz(float *out) const noexcept
+    {
+        _mm_store_ps(out, p3_);
+    }
+
     [[nodiscard]] float x() const noexcept
     {
         float out[4];
