@@ -66,6 +66,13 @@ extern "C"
         __m128 p2;
     } kln_motor;
 
+    typedef struct
+    {
+        float roll;  // Rotation about x-axis
+        float pitch; // Rotation about y-axis
+        float yaw;   // Rotation about z-axis
+    } kln_euler_angles;
+
     // INITIALIZATION ROUTINES
 
     /// Initialize a given plane to the quantity $a\mathbf{e}_1 + b\mathbf{e}_2 +\
@@ -92,7 +99,35 @@ extern "C"
     /// y\mathbf{e}_{031} + z\mathbf{e}_{012}$.
     void kln_point_init(kln_point* point, float x, float y, float z);
 
+    // Initializes a rotor such that it encodes a rotation of "ang_rad" radians
+    // around vector (x,y,z).
+    void kln_rotor_init(kln_rotor* rotor, float ang_rad, float x, float y, float z);
+
+    // Initialize a rotor using the given Euler angles.
+    void kln_rotor_init_ea(kln_rotor* rotor, kln_euler_angles* ea);
+
+    // DATA EXTRACTION ROUTINES
+
+    // Places the x, y and z coordinates of the given point at the first three
+    // indices of the given float array, respectively.
+    void kln_point_xyz(float* out, kln_point* point);
+
+    // Places the x, y, z and w coordinates of the given point at the first
+    // three indices of the given float array, respectively.
+    // Note that w is the homogeneous coordinate.
+    void kln_point_wxyz(float* out, kln_point* point);
+
+    // Returns the Euler angles corresponding to the rotation encoded
+    // by the given rotor.
+    kln_euler_angles kln_rotor_as_ea(kln_rotor* rotor);
+
     // VARIOUS GROUP ACTIONS
+
+    // Perform the inner product on a plane and a point
+    kln_line kln_inner_plane_point(kln_plane const *plane, kln_point const *point);
+
+    // Orthogonally project a point on a plane
+    kln_point kln_project_point_plane(kln_point const* point, kln_plane const* plane);
 
     /// Reflect point through plane
     kln_point kln_reflect_point(kln_plane const* plane, kln_point const* point);

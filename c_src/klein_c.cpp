@@ -79,6 +79,42 @@ void kln_point_init(kln_point* point, float x, float y, float z)
     point->p3 = kln::point{x, y, z}.p3_;
 }
 
+void kln_rotor_init(kln_rotor* rotor, float ang_rad, float x, float y, float z)
+{
+    rotor->p1 = kln::rotor(ang_rad, x, y, z).p1_;
+}
+
+void kln_rotor_init_ea(kln_rotor* rotor, kln_euler_angles* ea)
+{
+    rotor->p1 = kln::rotor(*((kln::euler_angles*)ea)).p1_;
+}
+
+void kln_point_xyz(float* out, kln_point* point)
+{
+    convert(*point).xyz(out);
+}
+
+void kln_point_wxyz(float* out, kln_point* point)
+{
+    convert(*point).wxyz(out);
+}
+
+kln_euler_angles kln_rotor_as_ea(kln_rotor* rotor)
+{
+    kln::euler_angles ea = kln::rotor(rotor->p1).as_euler_angles();
+    return *((kln_euler_angles*)&ea);
+}
+
+kln_line kln_inner_plane_point(kln_plane const* plane, kln_point const* point)
+{
+    return convert(convert(*plane) | (convert(*point)));
+}
+
+kln_point kln_project_point_plane(kln_point const* point, kln_plane const* plane)
+{
+    return convert(project(convert(*point), convert(*plane)));
+}
+
 kln_point kln_reflect_point(kln_plane const* plane, kln_point const* point)
 {
     return convert(convert(*plane)(convert(*point)));
